@@ -1,7 +1,7 @@
 import { apiResponseCode } from "../helper.js";
 
+
 //create product
-const mongoose = require('mongoose');
 const product = () => {
     const productSchema = new mongoose.Schema({
         ProductName: { type: String, required: true },
