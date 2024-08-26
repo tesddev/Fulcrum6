@@ -141,4 +141,5 @@ const login = async (req, res) => {
   }
 };
 
-export { registration, login };
+
+export { registration, login};
