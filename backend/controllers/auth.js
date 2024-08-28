@@ -12,6 +12,7 @@ const registration = async (req, res) => {
     phoneNumber: Joi.string().required(),
     username: Joi.string().required(),
     password: Joi.string().min(8).required(),
+    role: Joi.string().optional(),
   });
 
   try {
@@ -25,7 +26,7 @@ const registration = async (req, res) => {
       });
     }
     // destructure fields/values from the request body
-    const { fullName, email, phoneNumber, username, password } = req.body;
+    const { fullName, email, phoneNumber, username, password, role } = req.body;
 
     // Check if user with the email sent from the client already exist in the database
     let user = await User.findOne({ email });
@@ -47,6 +48,7 @@ const registration = async (req, res) => {
       phoneNumber,
       username,
       password: hashPassword,
+      role: role || 'user' 
     });
 
     // save the user to the database
