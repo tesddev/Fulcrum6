@@ -117,7 +117,7 @@ const login = async (req, res) => {
 
     // create/sign a token that the  user can use to access protected routes and also make sure the token expires in one hour
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       config.jwtSecret,
       { expiresIn: "1h" }
     );
