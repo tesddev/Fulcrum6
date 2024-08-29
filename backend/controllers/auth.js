@@ -38,6 +38,16 @@ const registration = async (req, res) => {
       });
     }
 
+    // Check if user with the username sent from the client already exists in the database
+    let userName = await User.findOne({ username });
+    if (userName) {
+        return res.status(400).json({
+            responseCode: apiResponseCode.BAD_REQUEST,
+            responseMessage: `${userName} already exist`,
+            data: null,
+        });
+    }
+
     // Hashing of password before saving to the database
     const hashPassword = await bcrypt.hash(password, 10);
 
