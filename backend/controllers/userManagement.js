@@ -1,9 +1,9 @@
-import Joi from "joi";
 import { apiResponseCode } from "../helper.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
+import mongoose from "mongoose";
 
 // Middleware to verify JWT
 function authenticateToken(req, res, next) {
@@ -171,6 +171,5 @@ const getUserProfile = async (req, res) => {
         });
     }
 }
-
 
 export { authenticateToken, updatePassword, updateProfile, getAllUsersCount, getUserProfile };
