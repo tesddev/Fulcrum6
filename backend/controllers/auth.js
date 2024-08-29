@@ -12,6 +12,7 @@ const registration = async (req, res) => {
     phoneNumber: Joi.string().required(),
     username: Joi.string().required(),
     password: Joi.string().min(8).required(),
+    role: Joi.string().optional(),
   });
 
   try {
@@ -25,7 +26,7 @@ const registration = async (req, res) => {
       });
     }
     // destructure fields/values from the request body
-    const { fullName, email, phoneNumber, username, password } = req.body;
+    const { fullName, email, phoneNumber, username, password, role } = req.body;
 
     // Check if user with the email sent from the client already exist in the database
     let user = await User.findOne({ email });
@@ -35,6 +36,16 @@ const registration = async (req, res) => {
         responseMessage: `${email} already exist`,
         data: null,
       });
+    }
+
+    // Check if user with the username sent from the client already exists in the database
+    let userName = await User.findOne({ username });
+    if (userName) {
+        return res.status(400).json({
+            responseCode: apiResponseCode.BAD_REQUEST,
+            responseMessage: `${userName} already exist`,
+            data: null,
+        });
     }
 
     // Hashing of password before saving to the database
@@ -47,6 +58,7 @@ const registration = async (req, res) => {
       phoneNumber,
       username,
       password: hashPassword,
+      role: role || 'user' 
     });
 
     // save the user to the database
@@ -115,7 +127,7 @@ const login = async (req, res) => {
 
     // create/sign a token that the  user can use to access protected routes and also make sure the token expires in one hour
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       config.jwtSecret,
       { expiresIn: "1h" }
     );
