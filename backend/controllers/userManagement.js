@@ -120,7 +120,7 @@ const updateProfile = async (req, res) => {
     }
 }
 
-const getAllUsers = async (req, res) => {
+const getAllUsersCount = async (req, res) => {
     try {
         // Ensure the token is authenticated before proceeding
         authenticateToken(req, res, async () => {
@@ -171,4 +171,30 @@ const deleteUser = async(req, res) => {
     }
 };
 
-export { authenticateToken, updatePassword, updateProfile, getAllUsers, deleteUser, isAdmin };
+const getAllUsers = async (req, res) => {
+    try {
+        // Ensure the token is authenticated before proceeding
+        authenticateToken(req, res, async () => {
+            // Retrieve all users from the database
+            const users = await User.find();
+
+            res.status(200).json({
+                responseCode: apiResponseCode.SUCCESSFUL,
+                responseMessage: "Users list retrieved successfully",
+                data: {
+                    totalUsers: users.length,
+                    users: users // Returns the list of all users
+                }
+            });
+        });
+    } catch (error) {
+        res.status(500).json({
+            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
+            responseMessage: "Internal Server Error",
+            error: error.message
+        });
+    }
+}
+
+
+export { authenticateToken, updatePassword, updateProfile, getAllUsersCount, deleteUser, isAdmin, getAllUsers };
