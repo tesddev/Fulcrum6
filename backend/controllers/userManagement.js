@@ -27,6 +27,17 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// Middleware to check if user is admin
+const isAdmin = (req, res, next) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({
+            responseCode: apiResponseCode.UNAUTHORIZED_ACCESS,
+            responseMessage: "Access denied, admin privileges required"
+        });
+    }
+    next();
+};
+
 // Route to update the password
 const updatePassword = async (req, res) => {
     try {
@@ -109,4 +120,55 @@ const updateProfile = async (req, res) => {
     }
 }
 
-export { authenticateToken, updatePassword, updateProfile };
+const getAllUsers = async (req, res) => {
+    try {
+        // Ensure the token is authenticated before proceeding
+        authenticateToken(req, res, async () => {
+            // Count the total number of users in the database
+            const userCount = await User.countDocuments();
+
+            res.status(200).json({
+                responseCode: apiResponseCode.SUCCESSFUL,
+                responseMessage: "Number of users retrieved successfully",
+                data: {
+                    totalUsers: userCount
+                }
+            });
+        });
+    } catch (error) {
+        res.status(500).json({
+            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
+            responseMessage: "Internal Server Error",
+            error: error.message
+        });
+    }
+}
+
+const deleteUser = async(req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params._id);
+        if (!user) {
+            return res.status(404).json({
+                succeeded: false,
+                message: "User not found",
+                responseCode: apiResponseCode.BAD_REQUEST,
+                resultData: null
+            });
+        }
+        res.status(200).json({
+            succeeded: true,
+            message: "User deleted successfully",
+            responseCode: apiResponseCode.SUCCESSFUL,
+            resultData: null
+        });
+    } catch (error) {
+        res.status(500).json({
+            succeeded: false,
+            message: "Internal Server Error",
+            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
+            resultData: null
+        });
+    }
+};
+
+export { authenticateToken, updatePassword, updateProfile, getAllUsers, deleteUser, isAdmin };
