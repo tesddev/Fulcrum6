@@ -27,17 +27,6 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// Middleware to check if user is admin
-const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({
-            responseCode: apiResponseCode.UNAUTHORIZED_ACCESS,
-            responseMessage: "Access denied, admin privileges required"
-        });
-    }
-    next();
-};
-
 const updatePassword = async (req, res) => {
     try {
         // Ensure the token is authenticated before proceeding
@@ -143,145 +132,17 @@ const getAllUsersCount = async (req, res) => {
     }
 }
 
-const deleteUser = async(req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params._id);
-        if (!user) {
-            return res.status(404).json({
-                succeeded: false,
-                message: "User not found",
-                responseCode: apiResponseCode.BAD_REQUEST,
-                resultData: null
-            });
-        }
-        res.status(200).json({
-            succeeded: true,
-            message: "User deleted successfully",
-            responseCode: apiResponseCode.SUCCESSFUL,
-            resultData: null
-        });
-    } catch (error) {
-        res.status(500).json({
-            succeeded: false,
-            message: "Internal Server Error",
-            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
-            resultData: null
-        });
-    }
-};
-
-const getAllUsers = async (req, res) => {
+const getUserProfile = async (req, res) => {
     try {
         // Ensure the token is authenticated before proceeding
         authenticateToken(req, res, async () => {
-            // Retrieve all users from the database
-            const users = await User.find();
-
-            res.status(200).json({
-                responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "Users list retrieved successfully",
-                data: {
-                    totalUsers: users.length,
-                    users: users // Returns the list of all users
-                }
-            });
-        });
-    } catch (error) {
-        res.status(500).json({
-            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
-            responseMessage: "Internal Server Error",
-            error: error.message
-        });
-    }
-}
-
-const createUser = async (req, res) => {
-    const registerSchema = Joi.object({
-        fullName: Joi.string().required(),
-        email: Joi.string().email().required(),
-        phoneNumber: Joi.string().required(),
-        username: Joi.string().required(),
-        password: Joi.string().min(8).required(),
-        role: Joi.string().optional(),
-    });
-
-    try {
-        // Ensure the token is authenticated and the user is an admin
-        authenticateToken(req, res, async () => {
-            if (req.user.role !== 'admin') {
-                return res.status(403).json({
-                    responseCode: apiResponseCode.UNAUTHORIZED_ACCESS,
-                    responseMessage: "Access denied, admin privileges required"
-                });
-            }
-
-            // validate user/client request
-            const { error } = registerSchema.validate(req.body);
-            if (error) {
-            return res.status(400).json({
-                responseCode: apiResponseCode.BAD_REQUEST,
-                responseMessage: error.details[0].message,
-                data: null,
-            });
-            }
-
-            const { fullName, email, phoneNumber, username, password, role } = req.body;
-
-            // Check if all required fields are provided
-            if (!fullName || !email || !phoneNumber || !username || !password ) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: "All fields are required"
-                });
-            }
-
-            // Hash the password before saving it
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            // Create the new user
-            const newUser = new User({
-                fullName,
-                email,
-                phoneNumber,
-                username,
-                password: hashedPassword,
-                role: role || 'user' 
-            });
-
-            // Save the user to the database
-            await newUser.save();
-
-            res.status(201).json({
-                responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "User created successfully",
-                data: {
-                    fullName: newUser.fullName,
-                    username: newUser.username,
-                    email: newUser.email,
-                    phoneNumber: newUser.phoneNumber,
-                    role: newUser.role
-                }
-            });
-        });
-    } catch (error) {
-        res.status(500).json({
-            responseCode: apiResponseCode.INTERNAL_SERVER_ERR,
-            responseMessage: "Internal Server Error",
-            error: error.message
-        });
-    }
-}
-
-const editUser = async (req, res) => {
-    try {
-        // Ensure the token is authenticated before proceeding
-        authenticateToken(req, res, async () => {
-
+            // Retrieve the user ID from the request parameters
             const { _id } = req.params;
-            const { fullName, email, phoneNumber, username, password } = req.body;
 
-            // Find the user by ID
+            // Find the user by ID in the database
             const user = await User.findById(_id);
+
+            // Check if the user exists
             if (!user) {
                 return res.status(404).json({
                     responseCode: apiResponseCode.MISSING_DETAILS,
@@ -289,26 +150,16 @@ const editUser = async (req, res) => {
                 });
             }
 
-            // Update the fields that are provided in the request body
-            if (fullName) user.fullName = fullName;
-            if (email) user.email = email;
-            if (phoneNumber) user.phoneNumber = phoneNumber;
-            if (username) user.username = username;
-            if (password) {
-                const hashedPassword =  await bcrypt.hash(password, 10);
-                user.password = hashedPassword;
-            }
-            // Save the updated user to the database
-            await user.save();
-
+            // Return the user's profile details
             res.status(200).json({
                 responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "User profile updated successfully",
+                responseMessage: "User profile retrieved successfully",
                 data: {
                     fullName: user.fullName,
                     username: user.username,
                     email: user.email,
-                    phoneNumber: user.phoneNumber
+                    phoneNumber: user.phoneNumber,
+                    role: user.role
                 }
             });
         });
@@ -321,4 +172,5 @@ const editUser = async (req, res) => {
     }
 }
 
-export { authenticateToken, updatePassword, updateProfile, getAllUsersCount, deleteUser, isAdmin, getAllUsers, createUser, editUser };
+
+export { authenticateToken, updatePassword, updateProfile, getAllUsersCount, getUserProfile };

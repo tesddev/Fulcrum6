@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken, getAllUsersCount, updatePassword, updateProfile, isAdmin, deleteUser, getAllUsers, editUser, createUser } from "../controllers/userManagement.js"
+import { authenticateToken, getAllUsersCount, updatePassword, updateProfile, getUserProfile } from "../controllers/userManagement.js"
 
 const userRouter = express.Router();
 
@@ -9,12 +9,6 @@ userRouter.put('/update-profile', authenticateToken, updateProfile);
 
 userRouter.get('/get-all-users-count', authenticateToken, getAllUsersCount);
 
-userRouter.delete('/users/:_id', authenticateToken, isAdmin, deleteUser);
-
-userRouter.get('/get-all-users', authenticateToken, isAdmin, getAllUsers);
-
-userRouter.post('/create-user', authenticateToken, isAdmin, createUser);
-
-userRouter.put('/edit-user/:_id', authenticateToken, isAdmin, editUser);
+userRouter.get('/get-user-profile/:_id', authenticateToken, getUserProfile);
 
 export default userRouter;
