@@ -137,16 +137,6 @@ const createUser = async (req, res) => {
                 });
             }
 
-            // Check if user with the phone number sent from the client already exists in the database
-            let userPhone = await User.findOne({ phoneNumber });
-            if (userPhone) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: `${phoneNumber} already exist`,
-                    data: null,
-                });
-            }
-
             // Check if user with the username sent from the client already exists in the database
             let user = await User.findOne({ username });
             if (user) {
