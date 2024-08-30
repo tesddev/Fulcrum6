@@ -1,5 +1,6 @@
 import express from "express";
-import { authenticateToken, isAdmin, deleteUser, getAllUsers, editUser, createUser } from "../controllers/admin.js"
+import { isAdmin, deleteUser, getAllUsers, editUser, createUser } from "../controllers/admin.js"
+import { authenticateToken } from "../controllers/auth.js";
 
 const adminRouter = express.Router();
 
