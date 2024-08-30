@@ -16,6 +16,9 @@ const productSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    createdBy: {
+        type: String,
+    }
 });
 
 export default mongoose.model('Product', productSchema)
