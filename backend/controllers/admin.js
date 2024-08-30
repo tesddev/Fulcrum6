@@ -5,28 +5,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
 
-// Middleware to verify JWT
-function authenticateToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({
-            responseCode: apiResponseCode.AUTH_MISSING,
-            responseMessage: "Authorization token is missing",
-        });
-    }
-
-    jwt.verify(token, config.jwtSecret, (err, user) => {
-        if (err) {
-            return res.status(403).json({
-                responseCode: apiResponseCode.EXPIRED_TOKEN,
-                responseMessage: "Invalid or expired token",
-            });
-        }
-        req.user = user;
-        next();
-    });
-}
-
 // Middleware to check if user is admin
 const isAdmin = (req, res, next) => {
     if (req.user.role !== 'admin') {
@@ -64,19 +42,16 @@ const deleteUser = async(req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        // Ensure the token is authenticated before proceeding
-        authenticateToken(req, res, async () => {
             // Retrieve all users from the database
-            const users = await User.find();
+        const users = await User.find();
 
-            res.status(200).json({
-                responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "Users list retrieved successfully",
-                data: {
-                    totalUsers: users.length,
-                    users: users // Returns the list of all users
-                }
-            });
+        res.status(200).json({
+            responseCode: apiResponseCode.SUCCESSFUL,
+            responseMessage: "Users list retrieved successfully",
+            data: {
+                totalUsers: users.length,
+                users: users // Returns the list of all users
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -98,82 +73,79 @@ const createUser = async (req, res) => {
     });
 
     try {
-        // Ensure the token is authenticated and the user is an admin
-        authenticateToken(req, res, async () => {
-            if (req.user.role !== 'admin') {
-                return res.status(403).json({
-                    responseCode: apiResponseCode.UNAUTHORIZED_ACCESS,
-                    responseMessage: "Access denied, admin privileges required"
-                });
-            }
-
-            // validate user/client request
-            const { error } = registerSchema.validate(req.body);
-            if (error) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: error.details[0].message,
-                    data: null,
-                });
-            }
-
-            const { fullName, email, phoneNumber, username, password, role } = req.body;
-
-            // Check if all required fields are provided
-            if (!fullName || !email || !phoneNumber || !username || !password ) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: "All fields are required"
-                });
-            }
-
-            // Check if user with the email sent from the client already exists in the database
-            let userEmail = await User.findOne({ email });
-            if (userEmail) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: `${email} already exist`,
-                    data: null,
-                });
-            }
-
-            // Check if user with the username sent from the client already exists in the database
-            let user = await User.findOne({ username });
-            if (user) {
-                return res.status(400).json({
-                    responseCode: apiResponseCode.BAD_REQUEST,
-                    responseMessage: `${username} already exist`,
-                    data: null,
-                });
-            }
-
-            // Hash the password before saving it
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            // Create the new user
-            const newUser = new User({
-                fullName,
-                email,
-                phoneNumber,
-                username,
-                password: hashedPassword,
-                role: role || 'user' 
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+                responseCode: apiResponseCode.UNAUTHORIZED_ACCESS,
+                responseMessage: "Access denied, admin privileges required"
             });
+        }
 
-            // Save the user to the database
-            await newUser.save();
-
-            res.status(201).json({
-                responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "User created successfully",
-                data: {
-                    fullName: newUser.fullName,
-                    username: newUser.username,
-                    email: newUser.email,
-                    phoneNumber: newUser.phoneNumber,
-                    role: newUser.role
-                }
+        // validate user/client request
+        const { error } = registerSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                responseCode: apiResponseCode.BAD_REQUEST,
+                responseMessage: error.details[0].message,
+                data: null,
             });
+        }
+
+        const { fullName, email, phoneNumber, username, password, role } = req.body;
+
+        // Check if all required fields are provided
+        if (!fullName || !email || !phoneNumber || !username || !password ) {
+            return res.status(400).json({
+                responseCode: apiResponseCode.BAD_REQUEST,
+                responseMessage: "All fields are required"
+            });
+        }
+
+        // Check if user with the email sent from the client already exists in the database
+        let userEmail = await User.findOne({ email });
+        if (userEmail) {
+            return res.status(400).json({
+                responseCode: apiResponseCode.BAD_REQUEST,
+                responseMessage: `${email} already exist`,
+                data: null,
+            });
+        }
+
+        // Check if user with the username sent from the client already exists in the database
+        let user = await User.findOne({ username });
+        if (user) {
+            return res.status(400).json({
+                responseCode: apiResponseCode.BAD_REQUEST,
+                responseMessage: `${username} already exist`,
+                data: null,
+            });
+        }
+
+        // Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create the new user
+        const newUser = new User({
+            fullName,
+            email,
+            phoneNumber,
+            username,
+            password: hashedPassword,
+            role: role || 'user' 
+        });
+
+        // Save the user to the database
+        await newUser.save();
+
+        res.status(201).json({
+            responseCode: apiResponseCode.SUCCESSFUL,
+            responseMessage: "User created successfully",
+            data: {
+                fullName: newUser.fullName,
+                username: newUser.username,
+                email: newUser.email,
+                phoneNumber: newUser.phoneNumber,
+                role: newUser.role
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -186,43 +158,39 @@ const createUser = async (req, res) => {
 
 const editUser = async (req, res) => {
     try {
-        // Ensure the token is authenticated before proceeding
-        authenticateToken(req, res, async () => {
+        const { _id } = req.params;
+        const { fullName, email, phoneNumber, username, password } = req.body;
 
-            const { _id } = req.params;
-            const { fullName, email, phoneNumber, username, password } = req.body;
-
-            // Find the user by ID
-            const user = await User.findById(_id);
-            if (!user) {
-                return res.status(404).json({
-                    responseCode: apiResponseCode.MISSING_DETAILS,
-                    responseMessage: "User not found"
-                });
-            }
-
-            // Update the fields that are provided in the request body
-            if (fullName) user.fullName = fullName;
-            if (email) user.email = email;
-            if (phoneNumber) user.phoneNumber = phoneNumber;
-            if (username) user.username = username;
-            if (password) {
-                const hashedPassword =  await bcrypt.hash(password, 10);
-                user.password = hashedPassword;
-            }
-            // Save the updated user to the database
-            await user.save();
-
-            res.status(200).json({
-                responseCode: apiResponseCode.SUCCESSFUL,
-                responseMessage: "User profile updated successfully",
-                data: {
-                    fullName: user.fullName,
-                    username: user.username,
-                    email: user.email,
-                    phoneNumber: user.phoneNumber
-                }
+        // Find the user by ID
+        const user = await User.findById(_id);
+        if (!user) {
+            return res.status(404).json({
+                responseCode: apiResponseCode.MISSING_DETAILS,
+                responseMessage: "User not found"
             });
+        }
+
+        // Update the fields that are provided in the request body
+        if (fullName) user.fullName = fullName;
+        if (email) user.email = email;
+        if (phoneNumber) user.phoneNumber = phoneNumber;
+        if (username) user.username = username;
+        if (password) {
+            const hashedPassword =  await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+        // Save the updated user to the database
+        await user.save();
+
+        res.status(200).json({
+            responseCode: apiResponseCode.SUCCESSFUL,
+            responseMessage: "User profile updated successfully",
+            data: {
+                fullName: user.fullName,
+                username: user.username,
+                email: user.email,
+                phoneNumber: user.phoneNumber
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -233,4 +201,4 @@ const editUser = async (req, res) => {
     }
 }
 
-export { authenticateToken, deleteUser, isAdmin, getAllUsers, createUser, editUser };
+export { deleteUser, isAdmin, getAllUsers, createUser, editUser };

@@ -153,4 +153,25 @@ const login = async (req, res) => {
   }
 };
 
-export { registration, login };
+function authenticateToken(req, res, next) {
+  const token = req.headers['authorization']?.split(' ')[1];
+  if (!token) {
+      return res.status(401).json({
+          responseCode: apiResponseCode.AUTH_MISSING,
+          responseMessage: "Authorization token is missing",
+      });
+  }
+
+  jwt.verify(token, config.jwtSecret, (err, user) => {
+      if (err) {
+          return res.status(403).json({
+              responseCode: apiResponseCode.EXPIRED_TOKEN,
+              responseMessage: "Invalid or expired token",
+          });
+      }
+      req.user = user;
+      next();
+  });
+}
+
+export { registration, login, authenticateToken };

@@ -1,5 +1,6 @@
 import express from "express";
-import { authenticateToken, getAllUsersCount, updatePassword, updateProfile, getUserProfile } from "../controllers/userManagement.js"
+import { authenticateToken } from "../controllers/auth.js";
+import { getAllUsersCount, updatePassword, updateProfile, getUserProfile } from "../controllers/userManagement.js"
 
 const userRouter = express.Router();
 
