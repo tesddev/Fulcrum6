@@ -12,13 +12,13 @@
 
 .product-content {
     display: flex;
-    justify-content: flex-start; /* Aligns items from the start (left to right) */
+    justify-content: flex-start; 
     width: 100%;
     margin-bottom: 20px;
 }
 
 .product-image-section {
-    width: 30%; /* Image section takes up 30% of the container width */
+    width: 30%; 
     display: flex;
     justify-content: flex-start;
     padding: 10px;
@@ -39,8 +39,8 @@
 }
 
 .product-info-section {
-    width: 65%; /* Product info section takes up 65% of the container width */
-    text-align: left; /* Align text to the left */
+    width: 85%; 
+    text-align: left; 
     padding: 10px;
     box-sizing: border-box;
 }
@@ -98,7 +98,7 @@
 }
 
 .product-description {
-    margin-top: 20px; /* Adds space between description and button */
+    margin-top: 20px;
 }
 
 .description-title {
