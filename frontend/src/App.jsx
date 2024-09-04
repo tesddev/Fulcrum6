@@ -1,28 +1,23 @@
+import { Route, Routes } from "react-router-dom";
+import { App as AntApp } from "antd"; // Import Ant Design's App component
+import Product from "./views/products/Product";
+import ProductDetails from "./views/products/ProductDetails";
+import Login from "./views/Login";
+import Register from "./views/Register";
+import Dashboard from "./views/Dashboard";
 
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import Product from "./products/Product"
-import ProductDetails from "./products/ProductDetails"
-import Home from "./products/Home";
-
-
-
-
-const App = ()=> {
-  return(
-    <div>
-     
-        <Routes>
-              <Route path = "/products" element = {<Product/>} />
-              <Route path = "/products/:id" element = {<ProductDetails/>} />
-              <Route path = "/" element = {<Home/>} />
-          </Routes>
-     
-
-              
-    </div>
-
+const App = () => {
+  return (
+    <AntApp>
+      <Routes>
+        <Route path="/products" element={<Product />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Login />} />
+      </Routes>
+    </AntApp>
   );
 };
 
-export default App
+export default App;
