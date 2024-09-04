@@ -15,6 +15,7 @@ const App = () => {
       path: "/register",
       Component: Register
     },
+    
     {
       path: "/dashboard",
       element: <ProtectedRoutes>

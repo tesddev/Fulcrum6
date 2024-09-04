@@ -1,3 +1,43 @@
+.Dashboard{
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.DashboardHeader{
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 20px 4px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+.DashboardFooter{
+height: 50px;
+display: flex;
+justify-content: space-evenly;
+align-items: center;
+border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+}
+.DashboardSideAndDashboardContent{
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: rgba(0, 0, 0, 0.05) ;
+}
+.DashboardSide{
+  height: 100%;
+}
+.DashboardSideVertical{
+  height: 100%;
+}
+.DashboardContent{
+  padding-left: 12px;
+}
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -40,3 +80,5 @@
 .read-the-docs {
   color: #888;
 }
+
+
