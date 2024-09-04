@@ -4,7 +4,7 @@ import Product from "./views/products/Product";
 import ProductDetails from "./views/products/ProductDetails";
 import Login from "./views/Login";
 import Register from "./views/Register";
-import Dashboard from "./views/Dashboard";
+import Dashboard from "./views/Dashboard/Dashboard";
 
 const App = () => {
   return (
