@@ -22,6 +22,7 @@ const useLogin = () => {
       if (response.data?.responseCode === "00") {
         onNotify("success", "Successful", response?.data?.responseMessage);
         sessionStorage.setItem("***", response.data?.data?.token)
+        sessionStorage.setItem('userName', response.data?.data?.fullName)
         setTimeout(() => {
             return navigate("/dashboard", {
                 replace: true
