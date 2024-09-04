@@ -140,7 +140,7 @@ const getAllProductsCount = async(req, res) => {
             responseCode: apiResponseCode.SUCCESSFUL,
             responseMessage: "Number of products retrieved successfully",
             data: {
-                totalUsers: productsCount
+                totalProducts: productsCount
             }
         });
     } catch (error) {
