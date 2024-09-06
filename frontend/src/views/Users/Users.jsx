@@ -81,7 +81,7 @@ const UsersPage = () => {
       key: "actions",
       render: (text, record) => (
         <>
-          <Button type="link" onClick={() => showModal(record)}>
+          <Button type="link" style={{ marginRight: '1rem' }} onClick={() => showModal(record)}>
             Edit
           </Button>
           <Button type="link" danger onClick={() => handleDelete(record.id)}>
