@@ -9,5 +9,9 @@ export const endpoints = {
         productCount: "product/get-all-products-count"
     },
 
+    users: {
+        getAllUsers: "admin/get-all-users",
+    },
+
     bearerToken: `Bearer ${sessionStorage.getItem("***")}`
 }
