@@ -77,8 +77,8 @@ const Product = () => {
       <Layout>
         <Header style={{ padding: 0, background: "#fff", textAlign: "center" }}>
           <h1 className="font-bold text-2xl">Manage Your Products</h1>
-        </Header
-        
+        </Header>
+
         <Content style={{ margin: "16px", padding: "24px", background: "#fff" }}>
           <div className="add-product-form">
             <div className="add-new">
