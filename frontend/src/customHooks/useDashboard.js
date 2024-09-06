@@ -30,7 +30,6 @@ const useDashboard = () => {
       if (userResponse.data?.responseCode === "00" && productResponse.data?.responseCode === "00") {
         setUserCount(userResponse.data?.data?.totalUsers);
         setProductCount(productResponse.data?.data?.totalProducts);
-        onNotify("success", "Welcome!");
       } else {
         onNotify("error", "Failed to Load Dashboard Data");
       }

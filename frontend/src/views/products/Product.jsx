@@ -60,7 +60,7 @@ const Product = () => {
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["2"]}>
           <Menu.Item key="1" icon={<DashboardOutlined />}>
-            <Link to="/">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<AppstoreOutlined />}>
             <Link to="/products">Products</Link>

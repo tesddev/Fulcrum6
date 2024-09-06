@@ -19,7 +19,6 @@ const App = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Login />} />
-        
       </Routes>
     </AntApp>
   );
