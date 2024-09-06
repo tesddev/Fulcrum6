@@ -116,10 +116,10 @@ const Product = () => {
                 onChange={handleInput}
               >
                 <option value="">Select Category</option>
-                <option value="Electricity">Electricity</option>
-                <option value="Clothes">Clothes</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Phones">Phones</option>
+                <option value="Sports">Sports</option>
+                <option value="Outdoor">Outdoor</option>
+                <option value="Disco">Disco</option>
+                <option value="Indoor">Indoor</option>
                 <option value="Others">Others</option>
               </select>
               <Button
