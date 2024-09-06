@@ -2,10 +2,12 @@ import { Layout, Menu, Form, Input, Button, message } from "antd";
 import { SettingOutlined, DashboardOutlined, UserOutlined, AppstoreOutlined } from "@ant-design/icons"; // Import icons
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
 
 const Settings = () => {
+  const navigate = useNavigate(); 
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [settings, setSettings] = useState({
@@ -25,6 +27,10 @@ const Settings = () => {
       message.success("Password changed successfully!");
       passwordForm.resetFields();
     }
+  };
+
+  const handleLogout = () => {
+    navigate("/");
   };
 
   return (
@@ -126,6 +132,10 @@ const Settings = () => {
                   Change Password
                 </Button>
               </Form.Item>
+
+                <Button type="primary" htmlType="submit" onClick={handleLogout}>
+                  Logout
+                </Button>
             </Form>
           </div>
         </Content>
