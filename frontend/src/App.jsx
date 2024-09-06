@@ -5,6 +5,8 @@ import ProductDetails from "./views/products/ProductDetails";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import Dashboard from "./views/Dashboard/Dashboard";
+import Users from "./views/Users/Users";
+import Settings from "./views/settings/Settings";
 
 const App = () => {
   return (
@@ -13,8 +15,11 @@ const App = () => {
         <Route path="/products" element={<Product />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Login />} />
+        
       </Routes>
     </AntApp>
   );
