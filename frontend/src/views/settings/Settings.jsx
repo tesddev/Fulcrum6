@@ -2,10 +2,12 @@ import { Layout, Menu, Form, Input, Button, message } from "antd";
 import { SettingOutlined, DashboardOutlined, UserOutlined, AppstoreOutlined } from "@ant-design/icons"; // Import icons
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
 
 const Settings = () => {
+  const navigate = useNavigate(); 
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [settings, setSettings] = useState({
@@ -27,6 +29,10 @@ const Settings = () => {
     }
   };
 
+  const handleLogout = () => {
+    navigate("/");
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible>
@@ -34,7 +40,7 @@ const Settings = () => {
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
           <Menu.Item key="1" icon={<DashboardOutlined />}>
-            <Link to="/">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<AppstoreOutlined />}>
             <Link to="/products">Products</Link>
@@ -126,6 +132,10 @@ const Settings = () => {
                   Change Password
                 </Button>
               </Form.Item>
+
+                <Button type="primary" htmlType="submit" onClick={handleLogout}>
+                  Logout
+                </Button>
             </Form>
           </div>
         </Content>

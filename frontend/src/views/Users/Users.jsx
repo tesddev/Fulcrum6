@@ -1,31 +1,29 @@
 import { Layout, Menu, Table, Button, Form, Input, Modal, Select, message } from "antd";
 import { SettingOutlined, DashboardOutlined, UserOutlined, AppstoreOutlined } from "@ant-design/icons"; // Importing icons
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import useGetAllUsers from "../../customHooks/useGetAllUsers";
 
 const { Header, Content, Sider } = Layout;
 const { Option } = Select;
 
-const initialUsers = [
-  {
-    id: 1,
-    username: "JohnDoe",
-    email: "john@example.com",
-    role: "Admin",
-  },
-  {
-    id: 2,
-    username: "JaneSmith",
-    email: "jane@example.com",
-    role: "User",
-  },
-];
-
 const UsersPage = () => {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [form] = Form.useForm();
+  
+  const { users: fetchedUsers, fetchUsers } = useGetAllUsers();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    if (fetchedUsers) {
+      setUsers(fetchedUsers);
+    }
+  }, [fetchedUsers]);
 
   const showModal = (user = null) => {
     setCurrentUser(user);
@@ -81,7 +79,7 @@ const UsersPage = () => {
       key: "actions",
       render: (text, record) => (
         <>
-          <Button type="link" onClick={() => showModal(record)}>
+          <Button type="link" style={{ marginRight: "1rem" }} onClick={() => showModal(record)}>
             Edit
           </Button>
           <Button type="link" danger onClick={() => handleDelete(record.id)}>
@@ -95,11 +93,10 @@ const UsersPage = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible>
-        <div className="logo" style={{ color: "#fff", textAlign: "center", padding: "20px 0" }}>
-        </div>
+        <div className="logo" style={{ color: "#fff", textAlign: "center", padding: "20px 0" }}></div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["3"]}>
           <Menu.Item key="1" icon={<DashboardOutlined />}>
-            <Link to="/">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<AppstoreOutlined />}>
             <Link to="/products">Products</Link>
@@ -128,7 +125,6 @@ const UsersPage = () => {
 
             <Table dataSource={users} columns={columns} rowKey="id" />
 
-          
             <Modal
               title={currentUser ? "Edit User" : "Add User"}
               visible={isModalVisible}
