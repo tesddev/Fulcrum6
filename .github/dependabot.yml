@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Backend npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "tesddev"
+    labels:
+      - "dependencies"
+      - "backend"
+    commit-message:
+      prefix: "chore(backend):"
+      prefix-development: "chore(backend-dev):"
+      include: "scope"
+    rebase-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    # Security updates only - auto-merge
+    groups:
+      security:
+        dependency-type: "all"
+        update-types:
+          - "semver:patch"
+    ignore:
+      - dependency-name: "mongoose"
+        update-types: ["version-update:semver-major"]
+
+  # Frontend npm dependencies  
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "tesddev"
+    labels:
+      - "dependencies"
+      - "frontend"
+    commit-message:
+      prefix: "chore(frontend):"
+      prefix-development: "chore(frontend-dev):"
+      include: "scope"
+    rebase-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    # Security updates only
+    groups:
+      security:
+        dependency-type: "all"
+        update-types:
+          - "semver:patch"
