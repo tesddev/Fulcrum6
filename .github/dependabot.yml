@@ -19,16 +19,17 @@ updates:
       include: "scope"
     rebase-strategy: "auto"
     allow:
-      - dependency-type: "all"
-    # Security updates only - auto-merge
+      - dependency-type: "production"
+      - dependency-type: "development"
     groups:
-      security:
-        dependency-type: "all"
+      security-patches:
+        dependency-type: "production"
         update-types:
-          - "semver:patch"
-    ignore:
-      - dependency-name: "mongoose"
-        update-types: ["version-update:semver-major"]
+          - "patch"
+      dev-security-patches:
+        dependency-type: "development"
+        update-types:
+          - "patch"
 
   # Frontend npm dependencies  
   - package-ecosystem: "npm"
@@ -49,10 +50,14 @@ updates:
       include: "scope"
     rebase-strategy: "auto"
     allow:
-      - dependency-type: "all"
-    # Security updates only
+      - dependency-type: "production"
+      - dependency-type: "development"
     groups:
-      security:
-        dependency-type: "all"
+      security-patches:
+        dependency-type: "production"
         update-types:
-          - "semver:patch"
+          - "patch"
+      dev-security-patches:
+        dependency-type: "development"
+        update-types:
+          - "patch"
